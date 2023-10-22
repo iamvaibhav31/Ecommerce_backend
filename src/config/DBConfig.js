@@ -1,4 +1,4 @@
-const mongoose =  require("mongoose")
+import mongoose from "mongoose"
 
 const getDBURI = () =>{
     return process.env.ENVIROMENT === "development" ? process.env.DEV_DB_URI : process.env.PROD_DB_URI 
@@ -14,4 +14,4 @@ const DBConnection = () =>{
     })
 }  
 
-module.exports = DBConnection
+export default DBConnection

@@ -1,5 +1,18 @@
-const mongoose = require("mongoose")
-const {modelsName}  = require("./../constant/models")
+import mongoose from "mongoose"
+import {modelsName} from "../helper/constants.js"
+
+const imageSchema = mongoose.Schema({
+    public_id: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    url: {
+        type: String,
+        required: true,
+    },
+    _id: false, // This line ensures that _id field is not added to the subdocument
+});
 
 const productSchema = mongoose.Schema({
     name:{
@@ -18,28 +31,19 @@ const productSchema = mongoose.Schema({
         type:Number,
         default:0,
     },
-    images:[{
-        public_1d:{
-            type:String,
-            required:true,
-        },
-        url:{
-            type:String,
-            required:true
-        }
-    }],
+    images:[imageSchema],
     category:{
         type:String,
         required:[true,"Please enter a category for the product"],
     },
-    stock:{
+    stock:{ 
         type:Number,
         required:[true,"Please enter the stock present"],
         maxLength:[4,"stock cannot exceed 4 characters"],
         default:1,
     },
     numOfReviews:{
-        type:String,
+        type:Number,
         default:0
     },
     createdAt:{
@@ -48,4 +52,4 @@ const productSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model(modelsName.PRODUCTS , productSchema)
+export default mongoose.model(modelsName.PRODUCTS , productSchema)

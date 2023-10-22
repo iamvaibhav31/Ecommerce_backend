@@ -1,11 +1,20 @@
-const express = require("express")
-require('dotenv').config()
-const server = express()
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
+const server = express();
 
-const DBConfig = require("./src/config/DBConfig")
+import router from "./src/routes/index.js";
 
-DBConfig()
+import DBConnection from './src/config/DBConfig.js'
 
-server.listen(process.env.PORT,()=>{
-    console.log("... Server is started ...")
-})
+DBConnection();
+
+server.use(express.json())
+server.use("/api", router);
+
+
+
+server.listen(process.env.PORT, () => {
+  console.log("... Server is started ...");
+});
+   
