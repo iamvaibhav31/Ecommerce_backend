@@ -1,24 +1,103 @@
-import { createProductService } from "../services/productServices.js";
+import {
+  createProductService,
+  getAllProductsServices,
+  deleteProductService,
+  updateProdctService,
+  isProductExist,
+} from "../services/productServices.js";
+
+import ErrorHandles from "../helper/error.js";
+
 import httpStatus from "http-status";
 
 const getAllProducts = async (req, res, next) => {
-        
+  try {
+    await getAllProductsServices(req.query, (err, result) => {
+      if (err) {
+        return next(new ErrorHandles(err?.message, httpStatus.BAD_REQUES));
+      } else {
+        return res.status(httpStatus.OK).json(result);
+      }
+    });
+  } catch (error) {
+    return next(new ErrorHandles(error?.message, httpStatus.BAD_REQUES));
+  }
 };
 
 const createProduct = async (req, res, next) => {
   try {
-    await createProductService(req.body, (err, result) => {
-      if (err) {
-        return res.status(httpStatus.BAD_REQUEST).json(err);
-      }
+    const created = await createProductService(req.body);
+
+    if (created?.success) {
       return res.status(httpStatus.CREATED).json(result);
-    });
+    } else {
+      return next(new ErrorHandles(created?.message, 400));
+    }
   } catch (error) {
-    return res.status(httpStatus.BAD_REQUEST).json({
-      status: false,
-      message: error?.message || "Something went wrong",
-    });
+    return next(new ErrorHandles(error?.message, 400));
   }
 };
 
-export { getAllProducts, createProduct };
+const getProductDetails = async (req, res, next) => {
+  try {
+    const isExist = await isProductExist(req.query);
+    if (isExist?.success) {
+      res.status(httpStatus.OK).json(isExist);
+    } else {
+      return next(new ErrorHandles(isExist?.message, 400));
+    }
+  } catch (error) {
+    return next(new ErrorHandles(error?.message, 400));
+  }
+};
+
+const updateProducts = async (req, res, next) => {
+  try {
+    const result = await isProductExist(req.query);
+
+    if (result?.success) {
+      await updateProdctService(
+        { ...req.body, ...req.query, productDetails: result?.product },
+        (err, result) => {
+          if (err) {
+            return res.status(httpStatus.BAD_REQUEST).json(err);
+          } else {
+            return res.status(httpStatus.OK).json(result);
+          }
+        }
+      );
+    } else {
+      return next(new ErrorHandles(result?.message, 400));
+    }
+  } catch (error) {
+    return next(new ErrorHandles(error?.message, 400));
+  }
+};
+
+const deleteProducts = async (req, res, next) => {
+  try {
+    const result = await isProductExist(req.query);
+
+    if (result?.success) {
+      await deleteProductService(req.query, (err, result) => {
+        if (err) {
+          return res.status(httpStatus.BAD_REQUEST).json(err);
+        } else {
+          return res.status(httpStatus.OK).json(result);
+        }
+      });
+    } else {
+      return next(new ErrorHandles(result?.message, 400));
+    }
+  } catch (error) {
+    return next(new ErrorHandles(error?.message, 400));
+  }
+};
+
+export {
+  getAllProducts,
+  createProduct,
+  getProductDetails,
+  updateProducts,
+  deleteProducts,
+};
