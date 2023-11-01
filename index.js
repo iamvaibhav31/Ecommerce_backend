@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { errorHandler } from "./src/middleware/errorMiddleware.js";
 dotenv.config();
 const server = express();
@@ -14,9 +15,9 @@ process.on('uncaughtException', err => {
 DBConnection();
 
 server.use(express.json())
+server.use(cookieParser());
 server.use("/api", router);
 server.use(errorHandler)
-
 
 server.listen(process.env.PORT, () => {
   console.log("... Server is started ...");

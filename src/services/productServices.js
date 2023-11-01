@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 
 const getAllProductsServices = async (params, callback) => {
   try {
-    const { page = 1, limit = 10, name, userId, category, price } = params;
+    const { page = 1, limit = 10, name, sellerId, category, price } = params;
     let skip = (Number(page) - 1) * limit;
     let query = {};
     

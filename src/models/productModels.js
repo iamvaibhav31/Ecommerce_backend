@@ -1,20 +1,9 @@
 import mongoose from "mongoose";
-import { modelsName } from "../helper/constants.js";
+import { modelsName } from "../utils/constants.js";
+import imageSchema from "./imageModel.js";
 
-const imageSchema = mongoose.Schema({
-  public_id: {
-    type: String,
-    unique: true,
-    required: true,
-  },
-  url: {
-    type: String,
-    required: true,
-  },
-  _id: false, 
-});
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter product name"],
@@ -39,8 +28,6 @@ const productSchema = mongoose.Schema({
   stock: {
     type: Number,
     required: [true, "Please enter the stock present"],
-    maxLength: [4, "stock cannot exceed 4 characters"],
-    default: 1,
   },
   numOfReviews: {
     type: Number,

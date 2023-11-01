@@ -6,29 +6,43 @@ import {
   updateProducts,
   deleteProducts,
 } from "../../controller/productController.js";
-import { accessByUserType } from "../../middleware/access.js";
-import { userType } from "../../helper/constants.js";
+import { onlyaccessBy , isAuthenticated , isAccessable} from "../../middleware/authMiddleware.js";
+import { userType } from "../../utils/constants.js";
 const productRoutes = Router();
 
-productRoutes.get("/allProducts", getAllProducts);
+productRoutes.get(
+  "/allProducts",
+  isAuthenticated,
+  onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
+  isAccessable,
+  getAllProducts
+);
 
 productRoutes.post(
   "/createProducts",
-  accessByUserType.bind([userType.SELLERS, userType.ADMIN]),
+  onlyaccessBy.bind([userType.SELLER]),
+   isAccessable,
   createProduct
 );
 
-productRoutes.get("/ProductDetails", getProductDetails);
+productRoutes.get(
+  "/ProductDetails",
+  onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
+   isAccessable,
+  getProductDetails
+);
 
 productRoutes.patch(
   "/updatePoducts",
-  accessByUserType.bind([userType.SELLERS, userType.ADMIN]),
+  onlyaccessBy.bind([userType.SELLER]),
+   isAccessable,
   updateProducts
 );
 
 productRoutes.delete(
   "/deletePoducts",
-  accessByUserType.bind([userType.SELLERS, userType.ADMIN]),
+  onlyaccessBy.bind([userType.SELLER , userType.ADMIN]),
+   isAccessable,
   deleteProducts
 );
 

@@ -1,11 +1,12 @@
 const modelsName = {
     PRODUCTS:"products",
-    REVIEWS : "reveiws"
+    REVIEWS : "reveiws",
+    USERS :"users"
 }
 
 const userType = {
-    NORMAL:"Normal",
-    SELLERS:"Sellers",
+    USER:"User",
+    SELLER:"Seller",
     ADMIN:"Admin"
 }
 

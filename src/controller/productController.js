@@ -6,7 +6,7 @@ import {
   isProductExist,
 } from "../services/productServices.js";
 
-import ErrorHandles from "../helper/error.js";
+import ErrorHandles from "../utils/error.js";
 
 import httpStatus from "http-status";
 
@@ -60,7 +60,7 @@ const updateProducts = async (req, res, next) => {
         { ...req.body, ...req.query, productDetails: result?.product },
         (err, result) => {
           if (err) {
-            return res.status(httpStatus.BAD_REQUEST).json(err);
+            return next(new ErrorHandles(err?.message, 400));
           } else {
             return res.status(httpStatus.OK).json(result);
           }
@@ -81,7 +81,7 @@ const deleteProducts = async (req, res, next) => {
     if (result?.success) {
       await deleteProductService(req.query, (err, result) => {
         if (err) {
-          return res.status(httpStatus.BAD_REQUEST).json(err);
+          return next(new ErrorHandles(err?.message, 400));
         } else {
           return res.status(httpStatus.OK).json(result);
         }
