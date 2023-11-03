@@ -4,6 +4,8 @@ import {
   createNewUserService,
   isUserExist,
   userLoginService,
+  userForgotPasswordService,
+  userRestPasswordService,
 } from "../services/userServices.js";
 
 const register = async (req, res, next) => {
@@ -77,4 +79,91 @@ const logout = async (req, res, next) => {
   }
 };
 
-export { register, login , logout };
+const forgotpassword = async (req, res, next) => {
+  try {
+    const { email } = req?.query;
+
+    if (!email) {
+      return next(
+        new ErrorHandles("Email cannot be empty", httpStatus.UNAUTHORIZED)
+      );
+    } else {
+      const userData = await isUserExist({ email });
+
+      if (userData?.success) {
+        userForgotPasswordService(
+          {
+            email,
+            userDetails: userData?.user,
+            protocol: req.protocol,
+            host: req.get("host"),
+          },
+          (error, result) => {
+            if (error) {
+              return next(
+                new ErrorHandles(error?.message, httpStatus.UNAUTHORIZED)
+              );
+            } else {
+              return res.status(httpStatus.OK).json(result);
+            }
+          }
+        );
+      } else {
+        return next(
+          new ErrorHandles(userData?.message, httpStatus.UNAUTHORIZED)
+        );
+      }
+    }
+  } catch (error) {
+    return next(new ErrorHandles(error?.message, 400));
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { email, token } = req?.query;
+    const { password } = req?.body;
+
+    if (!email || !token) {
+      return next(
+        new ErrorHandles(
+          "Use a valid Reset Password link you got in your corresponding email, or try some time later.",
+          httpStatus.UNAUTHORIZED
+        )
+      );
+    } else if (!password) {
+      return next(
+        new ErrorHandles("password cannot be empty", httpStatus.UNAUTHORIZED)
+      );
+    } else {
+      const userData = await isUserExist({ email });
+      if (userData?.success) {
+        userRestPasswordService(
+          {
+            email,
+            newPassword: password,
+            resetToken: token,
+            userDetails: userData?.user,
+          },
+          (error, result) => {
+            if (error) {
+              return next(
+                new ErrorHandles(error?.message, httpStatus.UNAUTHORIZED)
+              );
+            } else {
+              return res.status(httpStatus.OK).json(result);
+            }
+          }
+        );
+      } else {
+        return next(
+          new ErrorHandles(userData?.message, httpStatus.UNAUTHORIZED)
+        );
+      }
+    }
+  } catch (error) {
+    return next(new ErrorHandles(error?.message, 400));
+  }
+};
+
+export { register, login, logout, forgotpassword, resetPassword };

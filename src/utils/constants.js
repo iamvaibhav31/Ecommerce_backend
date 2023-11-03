@@ -1,7 +1,8 @@
 const modelsName = {
     PRODUCTS:"products",
     REVIEWS : "reveiws",
-    USERS :"users"
+    USERS :"users",
+    SELLERS:"sellers"
 }
 
 const userType = {

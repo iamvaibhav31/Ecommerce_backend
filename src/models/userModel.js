@@ -30,15 +30,6 @@ const userSchema = new mongoose.Schema({
 
   resetPasswordToken: String,
   resetPasswordExpire: Date,
-
-  isSeller:{
-    type: Boolean,
-    default: false,
-  },
-  isAdmin:{
-    type: Boolean,
-    default: false,
-  }
 });
 
 userSchema.pre("save", async function (next) {
@@ -60,6 +51,12 @@ userSchema.methods.getJwtToken = function () {
 userSchema.methods.isCorrectPassword = function (password) {
   const hashing = new Encryption();
   return hashing.validation(password, this.password);
+};
+
+userSchema.methods.getResetToken = function () {
+  const token = new Tokens()
+  const user = this
+  return token.genrateResendToken(user);
 };
 
 export default mongoose.model(modelsName.USERS, userSchema);

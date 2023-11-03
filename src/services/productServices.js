@@ -59,7 +59,7 @@ const getAllProductsServices = async (params, callback) => {
 
 const createProductService = async (params, callback) => {
   try {
-    const { name, description, price, rating, images_urls, category, stock } =
+    const { name, description, price, rating, images_urls, category, stock , id } =
       params;
 
     const productImage = images_urls?.map((url) => {
@@ -77,6 +77,7 @@ const createProductService = async (params, callback) => {
       images: [...(productImage || [])],
       category,
       stock,
+      created_by:id
     });
 
     await product.save();

@@ -6,7 +6,11 @@ import {
   updateProducts,
   deleteProducts,
 } from "../../controller/productController.js";
-import { onlyaccessBy , isAuthenticated , isAccessable} from "../../middleware/authMiddleware.js";
+import {
+  onlyaccessBy,
+  isAuthenticated,
+  isAccessable,
+} from "../../middleware/authMiddleware.js";
 import { userType } from "../../utils/constants.js";
 const productRoutes = Router();
 
@@ -20,29 +24,33 @@ productRoutes.get(
 
 productRoutes.post(
   "/createProducts",
+  isAuthenticated,
   onlyaccessBy.bind([userType.SELLER]),
-   isAccessable,
+  isAccessable,
   createProduct
 );
 
 productRoutes.get(
   "/ProductDetails",
+  isAuthenticated,
   onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
-   isAccessable,
+  isAccessable,
   getProductDetails
 );
 
 productRoutes.patch(
   "/updatePoducts",
+  isAuthenticated,
   onlyaccessBy.bind([userType.SELLER]),
-   isAccessable,
+  isAccessable,
   updateProducts
 );
 
 productRoutes.delete(
   "/deletePoducts",
-  onlyaccessBy.bind([userType.SELLER , userType.ADMIN]),
-   isAccessable,
+  isAuthenticated,
+  onlyaccessBy.bind([userType.SELLER, userType.ADMIN]),
+  isAccessable,
   deleteProducts
 );
 

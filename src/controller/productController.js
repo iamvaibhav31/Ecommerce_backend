@@ -26,10 +26,11 @@ const getAllProducts = async (req, res, next) => {
 
 const createProduct = async (req, res, next) => {
   try {
+    req.body.id = req.user._id
     const created = await createProductService(req.body);
 
     if (created?.success) {
-      return res.status(httpStatus.CREATED).json(result);
+      return res.status(httpStatus.CREATED).json(created);
     } else {
       return next(new ErrorHandles(created?.message, 400));
     }

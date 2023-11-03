@@ -60,6 +60,7 @@ const isAccessable = (req, res, next) => {
   try {
     const userType = req?.userTypeAllowed;
     const user = req?.user;
+    console.log(userType , user?.role)
     if (userType?.includes(user?.role)) {
       next();
     } else {
