@@ -11,7 +11,14 @@ const userType = {
     ADMIN:"Admin"
 }
 
+const reviewType = {
+    POSITIVE:1,
+    NUTRAL:0,
+    NEGATIVE:-1
+}
+
 export  {
     modelsName,
-    userType
+    userType,
+    reviewType  
 }

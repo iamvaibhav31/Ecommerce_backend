@@ -2,6 +2,8 @@ const errorHandler = (err, req, res, next) => {
   console.log(
     "name :-",
     err.name,
+    "\ncode :-",
+    err.code,
     "\npath :-",
     err.path,
     "\nmessage :-",
@@ -14,7 +16,6 @@ const errorHandler = (err, req, res, next) => {
 
   return res.status(err.statusCode).json({
     success: false,
-    // error: {name : err.name, path : err.path , message : err.message} ,
     message: err.message,
   });
 };

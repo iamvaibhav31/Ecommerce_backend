@@ -3,51 +3,22 @@ import { nanoid } from "nanoid";
 
 const getAllProductsServices = async (params, callback) => {
   try {
-    const { page = 1, limit = 10, name, sellerId, category, price } = params;
-    let skip = (Number(page) - 1) * limit;
-    let query = {};
-    
-    if (name) {
-      query["name"] = { "$regex": `${name}`, "$options": "i" };
-    }
-    
-    if (category) {
-      
-      const parsedCategories = JSON.parse(category);
-      query["category"] = { "$in": parsedCategories };
-    }
-    
-    if (price) {
-      // Construct the price query object
-      const priceQuery = {};
-      if (price["$gt"]) {
-        priceQuery["$gt"] = parseFloat(price["$gt"]);
-      }
-      if (price["$lt"]) {
-        priceQuery["$lt"] = parseFloat(price["$lt"]);
-      }
-      if (price["$gte"]) {
-        priceQuery["$gte"] = parseFloat(price["$gte"]);
-      }
-      if (price["$lte"]) {
-        priceQuery["$lte"] = parseFloat(price["$lte"]);
-      }
-      query['price'] = { ...priceQuery };
-    }
-    
-    console.log(query);
-    
+    const { page, limit, skip, query } = params;
 
-    console.log(query)
     let products = await productModels
       .find(query)
       .skip(skip)
       .limit(Number(limit));
 
+    const totalCount = await productModels.count();
+
     return callback(false, {
       success: true,
       products,
-      totalCount: products?.length,
+      page: Number(page),
+      pages: Math.ceil(totalCount / limit),
+      limit: Number(limit),
+      totalCount,
     });
   } catch (error) {
     return callback({
@@ -59,8 +30,16 @@ const getAllProductsServices = async (params, callback) => {
 
 const createProductService = async (params, callback) => {
   try {
-    const { name, description, price, rating, images_urls, category, stock , id } =
-      params;
+    const {
+      name,
+      description,
+      price,
+      rating,
+      images_urls,
+      category,
+      stock,
+      id,
+    } = params;
 
     const productImage = images_urls?.map((url) => {
       return {
@@ -77,7 +56,7 @@ const createProductService = async (params, callback) => {
       images: [...(productImage || [])],
       category,
       stock,
-      created_by:id
+      created_by: id,
     });
 
     await product.save();
@@ -114,42 +93,11 @@ const deleteProductService = async (params, callback) => {
 
 const updateProdctService = async (params, callback) => {
   try {
-    const {
-      id,
-      name,
-      description,
-      price,
-      rating,
-      images_urls,
-      category,
-      stock,
-      productDetails,
-    } = params;
-
-    const productImage = images_urls?.map((url) => {
-      return {
-        public_id: nanoid(),
-        url: url,
-      };
+    const { filter, updateQuery } = params;
+    const product = await productModels.findOneAndUpdate(filter, updateQuery, {
+      new: true, // Return the modified document
+      runValidators: true, // Run validators for update operation
     });
-
-    const product = await productModels.findByIdAndUpdate(
-      id,
-      {
-        name,
-        description,
-        price,
-        rating,
-        images: [...(productDetails?.images || []), ...(productImage || [])],
-        category: [...(productDetails?.category || []), ...(category || [])],
-        stock,
-      },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: true,
-      }
-    );
     return callback(false, {
       success: true,
       product,
@@ -187,7 +135,28 @@ const isProductExist = async (params) => {
   }
 };
 
-const isProductYours = () => {};
+const isProductYours = (params) => {
+  try {
+    const { userId, productDetails } = params;
+
+    if (userId?.toString() === productDetails?.created_by?.toString()) {
+      return {
+        success: true,
+        message: "This is your product",
+      };
+    } else {
+      return {
+        success: false,
+        message: "You are not the owner of this product",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message,
+    };
+  }
+};
 
 export {
   getAllProductsServices,
@@ -195,4 +164,5 @@ export {
   updateProdctService,
   deleteProductService,
   isProductExist,
+  isProductYours,
 };

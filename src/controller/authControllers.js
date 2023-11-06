@@ -6,7 +6,7 @@ import {
   userLoginService,
   userForgotPasswordService,
   userRestPasswordService,
-} from "../services/userServices.js";
+} from "../services/authServices.js";
 
 const register = async (req, res, next) => {
   try {

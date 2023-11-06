@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import ErrorHandles from "../utils/error.js";
 import Tokens from "../utils/token.js";
-import { isUserExist } from "./../services/userServices.js";
+import { isUserExist } from "../services/authServices.js";
 
 const isAuthenticated = async (req, res, next) => {
   try {
@@ -21,7 +21,7 @@ const isAuthenticated = async (req, res, next) => {
         console.log("Token has expired");
         return next(
           new ErrorHandles(
-            "Please Login to Access this resource",
+            "Please Login Aggain to Access this resources",
             httpStatus.BAD_REQUEST
           )
         );
@@ -60,7 +60,7 @@ const isAccessable = (req, res, next) => {
   try {
     const userType = req?.userTypeAllowed;
     const user = req?.user;
-    console.log(userType , user?.role)
+
     if (userType?.includes(user?.role)) {
       next();
     } else {

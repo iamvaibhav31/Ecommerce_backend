@@ -3,6 +3,8 @@ import { nanoid } from "nanoid";
 import Tokens from "../utils/token.js";
 import Email from "../utils/email.js";
 import Encryption from "../utils/encrypt.js";
+import { updateUser } from "./userService.js";
+
 const createNewUserService = async (params) => {
   try {
     const { avatar_url, name, email, password } = params;
@@ -150,27 +152,9 @@ const userRestPasswordService = async (params, callback) => {
   }
 };
 
-const updateUser = async (filter, query, callback) => {
-  try {
-    const updatedUser = await userModel.findOneAndUpdate(filter, query, {
-      new: true,
-      runValidators: true,
-    });
-    if (updatedUser) {
-      return callback(false, { success: true, user: updatedUser });
-    } else {
-      return callback({ success: false, message: "User Not Found" });
-    }
-  } catch (error) {
-    return callback({
-      success: false,
-      message: error?.message,
-    });
-  }
-};
 
 export {
-  updateUser,
+
   isUserExist,
   userLoginService,
   createNewUserService,
