@@ -4,10 +4,26 @@ import {
   isAuthenticated,
   isAccessable,
 } from "../../middleware/authMiddleware.js";
-import { addToBucket ,addaddress , deleteUserArrData , updateUserArrData } from "../../controller/userController.js";
+import {
+  addToBucket,
+  addaddress,
+  deleteUserArrData,
+  updateAddress,
+  changePassword,
+  updateUserProfile,
+  assignUserRole,
+} from "../../controller/userController.js";
 import { userType } from "../../utils/constants.js";
 
 const userRoutes = Router();
+
+userRoutes.post(
+  "/assignUserRole",
+  isAuthenticated,
+  onlyaccessBy.bind([userType.USER]),
+  isAccessable,
+  assignUserRole
+);
 
 userRoutes.post(
   "/addToBucket",
@@ -17,7 +33,6 @@ userRoutes.post(
   addToBucket
 );
 
-
 userRoutes.post(
   "/addaddress",
   isAuthenticated,
@@ -26,7 +41,13 @@ userRoutes.post(
   addaddress
 );
 
-
+userRoutes.patch(
+  "/updateAddress",
+  isAuthenticated,
+  onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
+  isAccessable,
+  updateAddress
+);
 
 userRoutes.delete(
   "/deleteUserArrData",
@@ -34,6 +55,22 @@ userRoutes.delete(
   onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
   isAccessable,
   deleteUserArrData
+);
+
+userRoutes.post(
+  "/updateUserProfile",
+  isAuthenticated,
+  onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
+  isAccessable,
+  updateUserProfile
+);
+
+userRoutes.post(
+  "/changePassword",
+  isAuthenticated,
+  onlyaccessBy.bind([userType.USER, userType.SELLER, userType.ADMIN]),
+  isAccessable,
+  changePassword
 );
 
 export default userRoutes;

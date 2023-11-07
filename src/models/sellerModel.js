@@ -3,7 +3,7 @@ import { modelsName } from "../utils/constants.js";
 
 const sellerSchema = new mongoose.Schema(
   {
-    user_id: {
+    _id: {
       type: mongoose.Schema.ObjectId,
       ref: modelsName.USERS,
       unique: true,
@@ -34,7 +34,7 @@ const sellerSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true , _id:false}
 );
 
 export default mongoose.model(modelsName.SELLERS, sellerSchema);

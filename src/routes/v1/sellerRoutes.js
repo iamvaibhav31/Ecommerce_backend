@@ -5,16 +5,9 @@ import {
   isAccessable,
 } from "../../middleware/authMiddleware.js";
 import { userType } from "../../utils/constants.js";
-import { assignUserRole } from "../../controller/commonControler.js";
-
 const sellerRoutes = Router();
 
-sellerRoutes.post(
-  "/assignUserRole",
-  isAuthenticated,
-  onlyaccessBy.bind([userType.USER]),
-  isAccessable,
-  assignUserRole
-);
+
+const hideProduct = () => {}
 
 export default sellerRoutes;

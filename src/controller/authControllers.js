@@ -2,11 +2,11 @@ import ErrorHandles from "../utils/error.js";
 import httpStatus from "http-status";
 import {
   createNewUserService,
-  isUserExist,
   userLoginService,
   userForgotPasswordService,
   userRestPasswordService,
 } from "../services/authServices.js";
+import { findUserByField } from "../services/userService.js";
 
 const register = async (req, res, next) => {
   try {
@@ -36,7 +36,7 @@ const login = async (req, res, next) => {
         )
       );
     } else {
-      const userData = await isUserExist({ email });
+      const userData = await findUserByField({ email });
 
       if (userData?.success) {
         await userLoginService(
@@ -88,7 +88,7 @@ const forgotpassword = async (req, res, next) => {
         new ErrorHandles("Email cannot be empty", httpStatus.UNAUTHORIZED)
       );
     } else {
-      const userData = await isUserExist({ email });
+      const userData = await findUserByField({ email });
 
       if (userData?.success) {
         userForgotPasswordService(
@@ -136,7 +136,7 @@ const resetPassword = async (req, res, next) => {
         new ErrorHandles("password cannot be empty", httpStatus.UNAUTHORIZED)
       );
     } else {
-      const userData = await isUserExist({ email });
+      const userData = await findUserByField({ email });
       if (userData?.success) {
         userRestPasswordService(
           {

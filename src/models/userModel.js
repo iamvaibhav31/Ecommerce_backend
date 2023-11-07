@@ -6,6 +6,8 @@ import Encryption from "../utils/encrypt.js";
 import Tokens from "../utils/token.js";
 import addressSchema from "./addressModel.js";
 import bucketSchema from "./bucketModel.js";
+
+
 const userSchema = new mongoose.Schema({
   avatar: imageSchema,
   name: {
@@ -46,7 +48,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.getJwtToken = function () {
   const token = new Tokens();
   return token.genrateToken({
-    email: this.email,
+    id: this._id,
   });
 };
 

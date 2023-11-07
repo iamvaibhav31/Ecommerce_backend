@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import ErrorHandles from "../utils/error.js";
 import Tokens from "../utils/token.js";
-import { isUserExist } from "../services/authServices.js";
+import { findUserByID } from "../services/userService.js";
 
 const isAuthenticated = async (req, res, next) => {
   try {
@@ -27,7 +27,7 @@ const isAuthenticated = async (req, res, next) => {
         );
       } else {
         console.log("Token is valid");
-        const userData = await isUserExist({ email: data?.email });
+        const userData = await findUserByID({ _id: data?.id });
         if (userData?.success) {
           req.user = userData?.user;
           return next();
@@ -60,7 +60,7 @@ const isAccessable = (req, res, next) => {
   try {
     const userType = req?.userTypeAllowed;
     const user = req?.user;
-
+    console.log(userType , user)
     if (userType?.includes(user?.role)) {
       next();
     } else {

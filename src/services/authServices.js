@@ -7,13 +7,13 @@ import { updateUser } from "./userService.js";
 
 const createNewUserService = async (params) => {
   try {
-    const { avatar_url, name, email, password } = params;
+    const { image_base64, name, email, password } = params;
 
     const user = new userModel({
       name,
       avatar: {
         public_id: nanoid(),
-        url: avatar_url,
+        url: image_base64,
       },
       email,
       password,
@@ -50,25 +50,6 @@ const userLoginService = async (params, callback) => {
       success: false,
       message: err?.message,
     });
-  }
-};
-
-const isUserExist = async (params) => {
-  try {
-    const { email } = params;
-
-    const user = await userModel.findOne({ email });
-
-    if (user) {
-      return { success: true, user };
-    } else {
-      return { success: false, message: "User Not Found" };
-    }
-  } catch (err) {
-    return {
-      success: false,
-      message: err?.message,
-    };
   }
 };
 
@@ -119,7 +100,7 @@ const userRestPasswordService = async (params, callback) => {
 
     if (!isSimillarPassword) {
       const hashing = new Encryption();
-      const hashedNewPassword =  await hashing.encrypt(newPassword)
+      const hashedNewPassword = await hashing.encrypt(newPassword);
       await updateUser(
         { email, resetPasswordToken, resetPasswordExpire: { $gt: Date.now() } },
         {
@@ -152,10 +133,7 @@ const userRestPasswordService = async (params, callback) => {
   }
 };
 
-
 export {
-
-  isUserExist,
   userLoginService,
   createNewUserService,
   userRestPasswordService,

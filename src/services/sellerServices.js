@@ -5,7 +5,7 @@ const createSellerService = async (params, callback) => {
     const { userID, totalStock } = params;
 
     const seller = new sellerModel({
-      user_id: userID,
+      _id: userID,
       totalStock,
     });
     console.log("createSellerService" , seller)
@@ -22,5 +22,8 @@ const createSellerService = async (params, callback) => {
     });
   }
 };
+
+// hide product 
+// 
 
 export { createSellerService };
